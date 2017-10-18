@@ -178,7 +178,7 @@ public class Pattern
         public GroupOccurrence occurrence = GroupOccurrence.ONCE;
         public GroupType type = GroupType.BASIC;
         public ArrayList<Character> chars = new ArrayList<>();
-        public int count = -1;
+        public int count = 1;
 
         public String toString()
         {
