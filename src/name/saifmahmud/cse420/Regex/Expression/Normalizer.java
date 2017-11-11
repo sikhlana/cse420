@@ -1,9 +1,5 @@
 package name.saifmahmud.cse420.Regex.Expression;
 
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.Stack;
-
 class Normalizer
 {
     private static char[] validCharacters = new char[]{
