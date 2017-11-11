@@ -1,6 +1,6 @@
 package name.saifmahmud.cse420;
 
-import name.saifmahmud.cse420.Lexer.Tokenizer;
+import name.saifmahmud.cse420.Regex.Processor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +13,7 @@ public class Main
         File file = new File("input.txt");
         FileInputStream stream = new FileInputStream(file);
 
-        Parser parser = new Parser(stream);
-        parser.process();
+        Processor processor = new Processor(stream);
+        processor.process();
     }
 }
