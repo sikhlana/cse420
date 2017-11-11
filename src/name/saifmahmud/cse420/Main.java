@@ -13,10 +13,7 @@ public class Main
         File file = new File("input.txt");
         FileInputStream stream = new FileInputStream(file);
 
-        Tokenizer tokenizer = new Tokenizer(stream);
-        SymbolTable table = tokenizer.process();
-
-        System.out.println("Fetching symbols:");
-        System.out.println("\t" + table.toString().replaceAll("\n", "\n\t"));
+        Parser parser = new Parser(stream);
+        parser.process();
     }
 }
