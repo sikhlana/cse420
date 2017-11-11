@@ -1,7 +1,10 @@
 package name.saifmahmud.cse420.Regex;
 
+import name.saifmahmud.cse420.Regex.Expression.Matcher;
+import name.saifmahmud.cse420.Regex.Expression.Pattern;
+
 import java.io.FileInputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,7 +20,7 @@ public class Processor
     public void process()
     {
         Scanner sc = new Scanner(stream);
-        ArrayList<Pattern> patterns = new ArrayList<>();
+        LinkedList<Pattern> patterns = new LinkedList<>();
 
         int patternCount = sc.nextInt();
         sc.nextLine();
