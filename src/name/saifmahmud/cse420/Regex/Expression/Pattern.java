@@ -209,6 +209,11 @@ public class Pattern
                     referenced.add(state);
                 }
             }
+
+            if (state.epsilons.contains(ref))
+            {
+                referenced.add(state);
+            }
         }
 
         return referenced;
