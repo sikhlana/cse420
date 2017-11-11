@@ -1,3 +1,11 @@
+2
+ab*c*d
+a*b(cd)+e?f
+3
+acccd
+abbbbbcccc
+bcdcdcdef
+
 3
 [a-c]{3}cab+(da)*f
 db*a[^def]{2}gh

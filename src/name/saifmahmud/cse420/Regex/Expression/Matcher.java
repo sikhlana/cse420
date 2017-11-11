@@ -16,6 +16,11 @@ public class Matcher
     {
         for (int i = 0; i < input.length(); i++)
         {
+            if (currentStates.isEmpty())
+            {
+                return false;
+            }
+
             HashSet<State> next = new HashSet<>();
             char ch = input.charAt(i);
 

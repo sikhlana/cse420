@@ -11,6 +11,7 @@ public class Pattern
     };
 
     State start;
+    int uid = 0;
 
     public Pattern(String regex)
     {
@@ -24,7 +25,7 @@ public class Pattern
         groupId++;
 
         Stack<State> stack = new Stack<>();
-        stack.push(new State());
+        stack.push(new State(this));
 
         StringTokenizer tokenizer = new StringTokenizer(
                 Normalizer.normalize(regex), "()[]+?.*", true
@@ -41,7 +42,7 @@ public class Pattern
                     for (int i = 0; i < token.length(); i++)
                     {
                         State top = stack.peek();
-                        stack.add(new State());
+                        stack.add(new State(this));
 
                         top.addNextState(token.charAt(i), stack.peek());
                     }
@@ -84,7 +85,7 @@ public class Pattern
                     }
 
                     State top = stack.peek();
-                    stack.add(new GroupedState(compile(sb.toString())));
+                    stack.add(new GroupedState(compile(sb.toString()), this));
                     top.addNextState((char) 0, stack.peek());
                     break;
                 }
@@ -136,7 +137,7 @@ public class Pattern
                         chars = charss;
                     }
 
-                    State state = new State();
+                    State state = new State(this);
 
                     for (char ch : chars)
                     {
@@ -174,12 +175,15 @@ public class Pattern
             }
 
             GroupedState g = (GroupedState) state;
-
             HashSet<State> ref = getAllReferenced(stack, g);
 
             for (State rr : ref)
             {
-                rr.next.get((char) 0).remove(g);
+                if (rr.next.containsKey((char) 0))
+                {
+                    rr.next.get((char) 0).remove(g);
+                }
+
                 rr.epsilons.add(g.start);
             }
 
@@ -188,9 +192,10 @@ public class Pattern
             for (State end : ends)
             {
                 end.epsilons.addAll(g.epsilons);
-                for (HashSet<State> ss : g.next.values())
+
+                for (Map.Entry<Character, HashSet<State>> entry : g.next.entrySet())
                 {
-                    end.epsilons.addAll(ss);
+                    end.addNextState(entry.getKey(), entry.getValue());
                 }
             }
         }
@@ -241,58 +246,39 @@ public class Pattern
 
     private void processModifiers(Stack<State> stack)
     {
+        boolean re = false;
+
         for (State state : stack)
         {
             if (state.hasModifier())
             {
-                switch (state.modifier)
+                if (state.modifier == '*' || state.modifier == '+')
                 {
-                    case '*':
+                    state.epsilons.add(state.parent);
+                }
+
+                if (state.modifier == '*' || state.modifier == '?')
+                {
+                    state.parent.epsilons.add(state);
+
+                    if (state.accept && !state.parent.accept)
                     {
-                        state.epsilons.add(state.parent);
-                        state.parent.epsilons.add(state);
-
-                        if (state.accept && !state.parent.accept)
-                        {
-                            state.parent.accept = true;
-                            processModifiers(stack);
-                        }
-
-                        if (state.end && !state.parent.end)
-                        {
-                            state.parent.end = true;
-                            processModifiers(stack);
-                        }
-
-                        break;
+                        state.parent.accept = true;
+                        re = true;
                     }
 
-                    case '+':
+                    if (state.end && !state.parent.end)
                     {
-                        state.epsilons.add(state.parent);
-                        break;
-                    }
-
-                    case '?':
-                    {
-                        state.parent.epsilons.add(state);
-
-                        if (state.accept && !state.parent.accept)
-                        {
-                            state.parent.accept = true;
-                            processModifiers(stack);
-                        }
-
-                        if (state.end && !state.parent.end)
-                        {
-                            state.parent.end = true;
-                            processModifiers(stack);
-                        }
-
-                        break;
+                        state.parent.end = true;
+                        re = true;
                     }
                 }
             }
+        }
+
+        if (re)
+        {
+            processModifiers(stack);
         }
     }
 }

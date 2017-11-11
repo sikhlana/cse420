@@ -6,18 +6,20 @@ import java.util.Hashtable;
 
 class State
 {
-    private static int uid = 0;
-
     Hashtable<Character, HashSet<State>> next = new Hashtable<>();
     HashSet<State> epsilons = new HashSet<>();
     State parent;
 
-    int id = uid++;
-    int groupId;
+    private int id;
 
     boolean accept = false;
     boolean end = false;
     char modifier = 0;
+
+    State(Pattern p)
+    {
+        id = p.uid++;
+    }
 
     void addNextState(char ch, State state)
     {
@@ -57,8 +59,9 @@ class GroupedState extends State
 {
     State start;
 
-    GroupedState(State start)
+    GroupedState(State start, Pattern p)
     {
+        super(p);
         this.start = start;
     }
 }
