@@ -185,9 +185,10 @@ public class Pattern
 
             HashSet<State> ends = getEnds(g.start);
 
-            for (HashSet<State> ss : g.next.values())
+            for (State end : ends)
             {
-                for (State end : ends)
+                end.epsilons.addAll(g.epsilons);
+                for (HashSet<State> ss : g.next.values())
                 {
                     end.epsilons.addAll(ss);
                 }
